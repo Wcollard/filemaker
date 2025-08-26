@@ -1,0 +1,49 @@
+import os
+import sqlite3
+from tkinter import Tk, Label, Entry, Button, StringVar
+from tkcalendar import Calendar
+from datetime import datetime
+
+# Initialize the database
+conn = sqlite3.connect('client_data.db')
+c = conn.cursor()
+c.execute('''CREATE TABLE IF NOT EXISTS clients
+             (filename text, date_due text, matter_number text)''')
+conn.commit()
+
+def create_folder():
+    filename = filename_var.get()
+    date_due = cal.get_date()
+    matter_number = matter_number_var.get()
+
+    # Store the data in the database
+    c.execute("INSERT INTO clients VALUES (?, ?, ?)", (filename, date_due, matter_number))
+    conn.commit()
+    
+    # Create the directory
+    base_dir = os.path.expanduser("~/Documents/clients")
+    folder_name = f"{filename}_{matter_number}_{date_due}"
+    folder_path = os.path.join(base_dir, folder_name)
+    os.makedirs(folder_path, exist_ok=True)
+    print(f"Folder created at: {folder_path} 📂")
+
+# Set up the GUI
+root = Tk()
+root.title("Client Folder Creator")
+
+filename_var = StringVar()
+matter_number_var = StringVar()
+
+Label(root, text="Filename").grid(row=0, column=0)
+Entry(root, textvariable=filename_var).grid(row=0, column=1)
+
+Label(root, text="Date Due").grid(row=1, column=0)
+cal = Calendar(root, selectmode='day', year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
+cal.grid(row=1, column=1)
+
+Label(root, text="Matter Number").grid(row=2, column=0)
+Entry(root, textvariable=matter_number_var).grid(row=2, column=1)
+
+Button(root, text="Create Folder", command=create_folder).grid(row=3, column=0, columnspan=2)
+
+root.mainloop()

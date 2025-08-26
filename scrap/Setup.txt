@@ -1,0 +1,23 @@
+Setup
+uv init ...
+uv add ...
+uv run ...
+uv sync  #syncs to the pyproject.toml dependencies
+uv remove .. #removes a python installation
+
+#go to directory
+git config --global user.email "wcollard@yahoo.com"
+git config --global user.name "William Collard"
+git init
+#create .gitignore contents below to remove folder .venv
+	.venv/
+git add -A   #this adds all of the files except that in .gitignore
+git commit -m "title of commit"
+
+
+#setup github
+git branch -M main
+git remote add origin https://github.com/Wcollard/tkinter_82225.git
+
+#now push the documents to the repository
+git push origin main
